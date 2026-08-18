@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+/**
+ * Clearcade's surface.
+ *
+ * Dark, because the catalogue is wall-to-wall coloured thumbnails and a light
+ * page turns that into noise. Restrained everywhere else, because the product
+ * is an argument about honesty and a page that oversells undercuts it.
+ *
+ * Two accents carry meaning and are never used decoratively. Cyan marks
+ * anything checkable — a hash that matched, a record on chain, a rule you can
+ * redo. Amber marks money. If a colour appears, it is making a claim.
+ */
+
+@theme {
+  --color-ink-950: #090c11;
+  --color-ink-900: #0f131a;
+  --color-ink-850: #151a23;
+  --color-ink-800: #1c222d;
+  --color-ink-700: #262e3b;
+  --color-ink-600: #36404f;
+
+  --color-mist-100: #e9eef5;
+  --color-mist-300: #a9b5c7;
+  --color-mist-500: #6d7c91;
+  --color-mist-700: #475364;
+
+  --color-glass-300: #8fe3ef;
+  --color-glass-400: #4ecfe2;
+  --color-glass-500: #22b4ca;
+  --color-glass-600: #178ea3;
+
+  --color-amber-300: #f7cd77;
+  --color-amber-400: #f0b544;
+  --color-amber-500: #d99a24;
+
+  --color-coral-300: #f79a91;
+  --color-coral-400: #ef6a5d;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Segoe UI Mono",
+    Menlo, Consolas, monospace;
+}
+
+* {
+  border-color: var(--color-ink-700);
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Numbers that shift width while a slider moves make the whole table
+     twitch, which reads as instability in a product about trustworthy
+     figures. Tabular figures everywhere, permanently. */
+  font-variant-numeric: tabular-nums;
+}
+
+body {
+  background: var(--color-ink-950);
+  color: var(--color-mist-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-glass-500);
+  color: var(--color-ink-950);
+}
+
+/* A single focus treatment, visible against every surface in the palette. */
+:focus-visible {
+  outline: 2px solid var(--color-glass-400);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/**
+ * Range inputs.
+ *
+ * The weight sliders are the main thing anyone touches on this site, so they
+ * get styled properly rather than left to whatever the browser ships. Chrome
+ * and Firefox need separately-prefixed thumbs; there is no combined selector
+ * that both accept, and grouping them makes both rules drop.
+ */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-ink-700);
+  cursor: grab;
+}
+
+input[type="range"]:active {
+  cursor: grabbing;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--color-glass-400);
+  border: 3px solid var(--color-ink-950);
+  box-shadow: 0 0 0 1px var(--color-glass-500);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--color-glass-400);
+  border: 3px solid var(--color-ink-950);
+  box-shadow: 0 0 0 1px var(--color-glass-500);
+}
+
+/**
+ * Entrance motion.
+ *
+ * Content arrives in a short stagger so a dense page resolves in a readable
+ * order instead of landing all at once. It is deliberately small — twelve
+ * pixels and 400ms — because this is a catalogue people scroll, and motion
+ * that announces itself on every card becomes something to sit through.
+ */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes sweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Runs only while a hash is being checked, never as ambient decoration. */
+.checking {
+  background: linear-gradient(
+    90deg,
+    var(--color-ink-800) 0%,
+    var(--color-glass-600) 50%,
+    var(--color-ink-800) 100%
+  );
+  background-size: 200% 100%;
+  animation: sweep 1.1s linear infinite;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.drift {
+  animation: drift 14s ease-in-out infinite;
+}
+
+/**
+ * Anyone who has asked their system to stop animating things has asked for a
+ * reason, and a leaderboard is perfectly legible without any of this.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
